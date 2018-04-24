@@ -29,17 +29,17 @@ class App extends Component {
         if (snapshot.val()) {
           //if the user exists delete them
           let base = fire.database().ref('users').equalTo(this.name.value);
-          base.getRef().remove();
+          base.getRef().child(this.name.value).remove();
         }
-        else{
-          fire.database().ref('users').push({ name: this.name.value, checkedIn: true });
+        else {
+          fire.database().ref('users').child(this.name.value).set({ name: this.name.value, checkedIn: true });
         }
       });
   }
 
   render() {
     let name = localStorage.getItem("user");
-    if(this.name != null){
+    if (this.name != null) {
       this.name.value = name;
     }
     return (
@@ -48,9 +48,15 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Scrounge Checkin</h1>
         </header>
+        <br />
         <form onSubmit={this.checkinUser.bind(this)}>
-          <input type="text" ref={el => this.name = el} />
-          <input type="submit" />
+          <div>
+            <input type="text" ref={el => this.name = el} />
+          </div>
+          <br />
+          <div>
+            <input type="submit" />
+          </div>
           <div style={{ textAlign: 'center' }}>
             {
               this.state.checkedInUsers.map(user => <h3 key={user.id}>{user.name.name}</h3>)
